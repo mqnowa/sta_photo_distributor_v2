@@ -1,0 +1,49 @@
+[
+  {
+    "nodes" : [
+      {
+        "nodes" : [
+          {
+            "nodes" : [
+
+            ],
+            "frame" : "{{0, 0}, {760, 680}}",
+            "class" : "ImageView",
+            "attributes" : {
+              "flex" : "WH",
+              "frame" : "{{110, 110}, {100, 100}}",
+              "image_name" : "iob:image_256",
+              "class" : "ImageView",
+              "name" : "main_imageview",
+              "uuid" : "12827627-CE3F-484F-8129-EEF0A6FE9B05"
+            },
+            "selected" : true
+          }
+        ],
+        "frame" : "{{0, 0}, {760, 680}}",
+        "class" : "ScrollView",
+        "attributes" : {
+          "flex" : "WH",
+          "frame" : "{{96, 96}, {320, 320}}",
+          "uuid" : "2E4DE9D0-A277-4A2A-887C-208018FA1110",
+          "content_height" : 512,
+          "class" : "ScrollView",
+          "content_width" : 512,
+          "name" : "main_scrollview"
+        },
+        "selected" : false
+      }
+    ],
+    "frame" : "{{0, 0}, {760, 680}}",
+    "class" : "View",
+    "attributes" : {
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+      "enabled" : true,
+      "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+      "name" : "",
+      "tint_color" : "RGBA(0.000000,0.478000,1.000000,1.000000)",
+      "flex" : ""
+    },
+    "selected" : false
+  }
+]
