@@ -12,10 +12,10 @@
             "attributes" : {
               "flex" : "WH",
               "frame" : "{{110, 110}, {100, 100}}",
+              "image_name" : "iob:image_256",
               "class" : "ImageView",
-              "uuid" : "12827627-CE3F-484F-8129-EEF0A6FE9B05",
               "name" : "main_imageview",
-              "image_name" : "iob:image_256"
+              "uuid" : "12827627-CE3F-484F-8129-EEF0A6FE9B05"
             },
             "selected" : true
           }
@@ -31,7 +31,7 @@
           "content_width" : 512,
           "name" : "main_scrollview"
         },
-        "selected" : true
+        "selected" : false
       },
       {
         "nodes" : [
@@ -60,15 +60,15 @@
         "nodes" : [
 
         ],
-        "frame" : "{{0, 402}, {512, 62}}",
+        "frame" : "{{0, 400}, {512, 64}}",
         "class" : "ScrollView",
         "attributes" : {
           "flex" : "WT",
           "frame" : "{{96, 96}, {320, 320}}",
           "uuid" : "B400D9F8-87E0-48F1-823E-83FFA069A078",
-          "content_height" : 62,
+          "content_height" : 64,
           "class" : "ScrollView",
-          "content_width" : 450,
+          "content_width" : 512,
           "name" : "albums_scroll_view"
         },
         "selected" : false
@@ -118,13 +118,13 @@
               "flex" : "HLR",
               "action" : "",
               "frame" : "{{340, 0}, {80, 32}}",
-              "title" : "Select",
+              "title" : "Menu",
               "uuid" : "8FCC8414-5A2C-4767-B8D0-07BF979987A9",
               "class" : "Button",
-              "name" : "select_button",
+              "name" : "menu_button",
               "font_size" : 15
             },
-            "selected" : false
+            "selected" : true
           },
           {
             "nodes" : [
@@ -149,7 +149,7 @@
         "class" : "View",
         "attributes" : {
           "flex" : "WT",
-          "alpha" : 0.29999999999999993,
+          "alpha" : 1,
           "frame" : "{{330, 290}, {100, 100}}",
           "class" : "View",
           "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
@@ -157,6 +157,28 @@
           "name" : "controller_bg_view"
         },
         "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{355, 70}, {151, 32}}",
+        "class" : "Label",
+        "attributes" : {
+          "uuid" : "ACEE5AAB-7595-4224-9DA3-68C91072B57F",
+          "font_size" : 18,
+          "corner_radius" : 16,
+          "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+          "frame" : "{{181, 240}, {150, 32}}",
+          "border_width" : 0,
+          "alignment" : "center",
+          "text" : "---\/---(---)",
+          "font_name" : "<System>",
+          "class" : "Label",
+          "name" : "counter",
+          "flex" : "LB"
+        },
+        "selected" : true
       }
     ],
     "frame" : "{{0, 0}, {512, 512}}",
