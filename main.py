@@ -15,6 +15,7 @@ def randcol():
 
 sys.path.append('.')
 from print_override import print
+import layoutios
 
 # static variable : view name
 BUTTON_CLOSE = 'close_button'
@@ -369,6 +370,14 @@ sv = ui.View(frame=(0, 0, 512, 512))
 
 v = ui.load_view()
 v.flex = 'WH'
+sv.add_subview(v)
+statusbar = 44 if layoutios.notch else 20
+statusbar += 200 if CONFIG["IS_WITH_PIP"] else 0
+homebar = 34 if layoutios.homebar else 0
+v.height -= statusbar
+v.y      += statusbar
+v.height -= homebar
+
 splash = ui.View(
     frame=(0, 0, 512, 512),
     flex='WH',
@@ -376,9 +385,6 @@ splash = ui.View(
     name='splash'
 )
 splash.touch_enabled = False
-sv.add_subview(v)
-v.height -= CONFIG['STATUS_BAR_HEIGHT']
-v.y      += CONFIG['STATUS_BAR_HEIGHT']
 sv.add_subview(splash)
 
 sv.present(
