@@ -1,7 +1,8 @@
 
 import os
 import sys
-import json
+#import json
+import yaml
 
 import ui
 import photos
@@ -34,8 +35,8 @@ BUTTON_MENU = 'menu_button'
 
 COUNTER_VIEW = 'counter'
 
-with open('preferences.json') as f:
-    CONFIG = json.load(f)
+with open('preferences.yaml') as f:
+    CONFIG = yaml.safe_load(f)
 
 class image_view_controller():
     def __init__(self, view, assets, left=None, right=None, scale='fill'):
@@ -323,6 +324,8 @@ class thumbnails_view():
             self.thumb_view_cons[i:0] = [l, r]
         c = image_view_controller(ui.ImageView(flex='LRTB'), assets, left=self.thumb_view_cons[int(self.count/2)-1], right=self.thumb_view_cons[int(self.count/2)])
         c.view.width, c.view.height = size, size
+        c.view.border_width = 2
+        c.view.border_color = (0, 1, 0)
         self.thumb_view_cons[int(self.count/2):0] = [c]
         self.top_thumbnail = c
         self.set_views()
