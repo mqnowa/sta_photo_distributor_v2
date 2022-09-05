@@ -234,6 +234,9 @@ class sta_photo_distributor_v2():
         index = [a.title for a in self.albums].index(album_name)
         self.albums[index].remove_assets([self.assets[self.index]])
         console.hud_alert(f'remove from {album_name}', duration=0.5)
+        
+        self.delete_mode = False
+        
     
     def delete_current(self):
         try:
@@ -335,14 +338,23 @@ class album_buttons_view():
         self.view = view
         
         self.buttons = []
-        asset_collections = photos.get_albums()
-        for asset_collection in asset_collections:
-            name = asset_collection.title
+        all_asset_collections = photos.get_albums()
+        asset_collections = []
+        for i, mask in enumerate(CONFIG['ALBUM_MASK']):
+            if mask == 1:
+                try:
+                    asset_collections.append(all_asset_collections[i])
+                except IndexError:
+                    break
+        if CONFIG['ALBUM_MASK'][-1] == 1:
+            asset_collections.extend(all_asset_collections[len(CONFIG['ALBUM_MASK']):])
+        for ac in asset_collections:
+            name = ac.title
             button = ui.Button()
             button.action = button_function
             button.bounds = (0, 0, 48, 48)
             button.corner_radius = 24
-            button.background_color = (0.9,0.9,0.9,0.8)
+            button.background_color = (0.9,0.9,0.9,0.9)
             button.name = name
             if name.startswith('$'):
                 button.title = name[1]
@@ -352,15 +364,20 @@ class album_buttons_view():
         
         width = len(self.buttons) * (self.buttons[0].width + 8) + 8
         height = self.view.content_size[1]
-        self.view.content_size = (width, height)
-        
-        x = 8
+        if width > self.view.width:
+            self.view.content_size = (width, height)
+            padding = 8
+        else:
+            self.view.content_size = (self.view.width, height)
+            padding = (self.view.width - len(self.buttons) * self.buttons[0].width) / (len(self.buttons) + 1)
+
+        x = padding
         for button in self.buttons:
             button.center = (0, self.view.height/2)
             button.x = x
             self.view.add_subview(button)
             
-            x += button.width + 8
+            x += button.width + padding
 
 def remove_splash():
     def animation():
