@@ -2,7 +2,7 @@
 import os
 import sys
 #import json
-import yaml
+import json
 
 import ui
 import photos
@@ -32,11 +32,14 @@ VIEW_BUTTON_BG = 'controller_bg_view'
 BUTTON_NEXT = 'next_button'
 BUTTON_PREV = 'prev_button'
 BUTTON_MENU = 'menu_button'
+BUTTON_PAGE_JUMP = 'button_page_jump'
+BUTTON_TRASH = 'trash_button'
 
 COUNTER_VIEW = 'counter'
+LABEL_DELCOUNT = 'DeletelistBadgeLabel'
 
-with open('preferences.yaml') as f:
-    CONFIG = yaml.safe_load(f)
+with open('preferences.json') as f:
+    CONFIG = json.load(f)
 
 class image_view_controller():
     def __init__(self, view, assets, left=None, right=None, scale='fill'):
@@ -69,12 +72,12 @@ class image_view_controller():
                 self.view.image = self.assets[index].get_ui_image(size, crop=True)
             else:
                 self.view.image = self.assets[index].get_ui_image((1024, 1024))
-            if self.left is not None:
-                self.left.set_image(index - 1, crop=True)
-            if self.right is not None:
-                self.right.set_image(index + 1, crop=True)
         else:
             self.view.image = None
+        if self.left is not None:
+            self.left.set_image(index - 1, crop=True)
+        if self.right is not None:
+            self.right.set_image(index + 1, crop=True)
 
 class sta_photo_distributor_v2():
     def __init__(self, v):
@@ -95,6 +98,7 @@ class sta_photo_distributor_v2():
         )
         
         self.__delete_mode = False
+        self.delassets = []
     
     def awake(self):
         # button function setting
@@ -102,6 +106,8 @@ class sta_photo_distributor_v2():
         self.v[VIEW_BUTTON_BG][BUTTON_NEXT].action = self.on_button_next
         self.v[VIEW_BUTTON_BG][BUTTON_PREV].action = self.on_button_prev
         self.v[VIEW_BUTTON_BG][BUTTON_MENU].action = self.on_button_menu
+        self.v[BUTTON_PAGE_JUMP].action = self.on_page_jump_button
+        self.v[BUTTON_TRASH].action = self.on_button_trash
         
         # Thumbnail setting
         self.TB = thumbnails_view(self.v[VIEW_THUMB], 7)
@@ -169,15 +175,16 @@ class sta_photo_distributor_v2():
         self.__delete_mode = value
         self.v[VIEW_ALBUM].background_color = (1, 0.3, 0.3) if self.__delete_mode else None
     
-    def next_image(self):
+    def next_image(self, disable_aleart=False):
         if self.index >= len(self.assets)-1:
-            print('これ以上進めません。')
+            if not disable_aleart:
+                print('これ以上進めません。', stdout=False)
         else:
             self.index += 1
     
     def prev_image(self):
         if self.index < 0 + 1:
-            print('これ以上戻れません。')
+            print('これ以上戻れません。', stdout=False)
         else:
             self.index -= 1
     
@@ -191,15 +198,15 @@ class sta_photo_distributor_v2():
             self.index = index
     
     def open_last_image(self):
-        if os.path.exists(CONFIG['PATH_PREV_ID']):
-            with open(CONFIG['PATH_PREV_ID']) as f:
-                id = f.read().split()[0]
-            try:
-                index = [asset.local_id for asset in self.assets].index(id)
-                self.index = index
-                return
-            except ValueError:
-                pass
+        # if os.path.exists(CONFIG['PATH_PREV_ID']):
+        #     with open(CONFIG['PATH_PREV_ID']) as f:
+        #         id = f.read().split()[0]
+        #     try:
+        #         index = [asset.local_id for asset in self.assets].index(id)
+        #         self.index = index
+        #         return
+        #     except ValueError:
+        #         pass
         if not self.open_from_prev_openings():
             self.pick_image()
     
@@ -211,12 +218,12 @@ class sta_photo_distributor_v2():
                 try:
                     index = [asset.local_id for asset in self.assets].index(id)
                     self.index = index
+                    if ids[0] == 'latest':
+                        self.next_image(True)
                     return True
                 except ValueError:
                     continue
-            
             return False
-            
     
     def change_del_mode(self):
         self.delete_mode = not self.delete_mode
@@ -228,6 +235,9 @@ class sta_photo_distributor_v2():
         console.hud_alert(f'add to {album_name}', duration=0.5)
         
         self.next_image()
+    
+    def update_dellist_counter(self):
+        self.v[LABEL_DELCOUNT].width = 12 + len(str(self.delassets))
     
     def del_from_album(self, sender):
         album_name = sender.name
@@ -245,12 +255,39 @@ class sta_photo_distributor_v2():
             self.open_image()
         except IOError:
             print('faild to del photo')
+        except IndexError:
+            self.prev_image()
+            
+    def add_current_to_dellist(self):
+        try:
+            photos.batch_delete([self.assets[self.index]])
+            self.update_assets()
+            self.open_image()
+        except IOError:
+            print('faild to del photo')
+        except IndexError:
+            self.prev_image()
+            
+    def delete_dellist(self):
+        try:
+            if len(self.delassets):
+                photos.batch_delete(self.delassets)
+                self.v
+                self.update_assets()
+                self.open_image()
+        except IOError:
+            print('faild to del photo')
+        except IndexError:
+            self.prev_image()
     
     def on_button_close(self, sender):
         ids = [a.local_id for a in self.assets[:self.index+1]]
         ids.reverse()
         with open(CONFIG['PATH_PREV_IDs'], 'w') as f:
-            f.write('\n'.join(ids))
+            if self.index >= len(self.assets)-1:
+                f.write('\n'.join(['latest'] + ids))
+            else:
+                f.write('\n'.join(ids))
         self.v.superview.close()
 
     def on_button_next(self, sender):
@@ -278,6 +315,14 @@ class sta_photo_distributor_v2():
             self.del_from_album(sender)
         else:
             self.add_to_album(sender)
+    
+    def on_page_jump_button(self, sender):
+        goto = int(console.input_alert('Go to', f'1~{len(self.assets)}'))
+        self.index = goto - 1
+        
+    def on_button_trash(self, sender):
+        self.delete_current()
+        
 
 class thumbnails_view():
     def __init__(self, view, count):

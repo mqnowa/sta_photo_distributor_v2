@@ -178,17 +178,80 @@
           "name" : "counter",
           "flex" : "LB"
         },
-        "selected" : true
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{355, 70}, {151, 32}}",
+        "class" : "Button",
+        "attributes" : {
+          "flex" : "LB",
+          "frame" : "{{216, 240}, {80, 32}}",
+          "title" : " ",
+          "uuid" : "A7569064-7AEC-41BE-BF00-DBAF8ED294AB",
+          "class" : "Button",
+          "name" : "button_page_jump",
+          "font_size" : 15
+        },
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{6, 70}, {48, 48}}",
+        "class" : "Button",
+        "attributes" : {
+          "uuid" : "860AAB05-8D3F-4964-B5AD-1C039850CA47",
+          "image_name" : "iob:trash_b_32",
+          "flex" : "RB",
+          "corner_radius" : 16,
+          "background_color" : "RGBA(0.906367,0.906367,0.906367,1.000000)",
+          "frame" : "{{340, 324}, {80, 32}}",
+          "border_width" : 0,
+          "title" : "",
+          "action" : "",
+          "alpha" : 1,
+          "class" : "Button",
+          "name" : "trash_button",
+          "font_size" : 15
+        },
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{38, 62}, {24, 24}}",
+        "class" : "Label",
+        "attributes" : {
+          "uuid" : "F991C568-BCA2-4BAC-8381-65C97F10AA96",
+          "corner_radius" : 12,
+          "background_color" : "RGBA(1.000000,0.269231,0.269231,1.000000)",
+          "frame" : "{{181, 240}, {150, 32}}",
+          "border_width" : 0,
+          "alignment" : "center",
+          "text_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+          "text" : "6",
+          "alpha" : 1,
+          "font_name" : "<System>",
+          "class" : "Label",
+          "name" : "DeletelistBadgeLabel",
+          "font_size" : 18
+        },
+        "selected" : false
       }
     ],
     "frame" : "{{0, 0}, {512, 512}}",
     "class" : "View",
     "attributes" : {
-      "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
-      "enabled" : true,
-      "tint_color" : "RGBA(0.000000,0.478000,1.000000,1.000000)",
-      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
       "name" : "",
+      "enabled" : true,
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+      "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+      "tint_color" : "RGBA(0.000000,0.478000,1.000000,1.000000)",
       "flex" : ""
     },
     "selected" : false
