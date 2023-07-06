@@ -1,4 +1,3 @@
-
 import os
 import sys
 #import json
@@ -99,6 +98,9 @@ class sta_photo_distributor_v2():
         
         self.__delete_mode = False
         self.delassets = []
+        ObjCInstance(self.v[LABEL_DELCOUNT]).clipsToBounds = True
+        self.v[LABEL_DELCOUNT].touch_enabled = False
+        self.update_dellist_counter()
     
     def awake(self):
         # button function setting
@@ -237,7 +239,12 @@ class sta_photo_distributor_v2():
         self.next_image()
     
     def update_dellist_counter(self):
-        self.v[LABEL_DELCOUNT].width = 12 + len(str(self.delassets))
+        if len(self.delassets) == 0:
+            self.v[LABEL_DELCOUNT].hidden = True
+        else:
+            self.v[LABEL_DELCOUNT].hidden = False
+            self.v[LABEL_DELCOUNT].width = 12 + len(str(len(self.delassets))) * 12
+            self.v[LABEL_DELCOUNT].text = str(len(self.delassets))
     
     def del_from_album(self, sender):
         album_name = sender.name
@@ -260,27 +267,28 @@ class sta_photo_distributor_v2():
             
     def add_current_to_dellist(self):
         try:
-            photos.batch_delete([self.assets[self.index]])
-            self.update_assets()
-            self.open_image()
-        except IOError:
-            print('faild to del photo')
+            if self.assets[self.index] not in self.delassets:
+                self.delassets.append(self.assets[self.index])
+                self.update_dellist_counter()
         except IndexError:
             self.prev_image()
             
     def delete_dellist(self):
-        try:
-            if len(self.delassets):
+        if len(self.delassets) > 0:
+            try:
+            
+                self.save_current_opening()
                 photos.batch_delete(self.delassets)
-                self.v
+                self.delassets.clear()
+                self.update_dellist_counter()                
                 self.update_assets()
-                self.open_image()
-        except IOError:
-            print('faild to del photo')
-        except IndexError:
-            self.prev_image()
-    
-    def on_button_close(self, sender):
+                self.open_last_image()
+            except IOError:
+                print('faild to del photo')
+            except IndexError:
+                self.prev_image()
+
+    def save_current_opening(self):
         ids = [a.local_id for a in self.assets[:self.index+1]]
         ids.reverse()
         with open(CONFIG['PATH_PREV_IDs'], 'w') as f:
@@ -288,6 +296,10 @@ class sta_photo_distributor_v2():
                 f.write('\n'.join(['latest'] + ids))
             else:
                 f.write('\n'.join(ids))
+        
+    def on_button_close(self, sender):
+        self.delete_dellist()
+        self.save_current_opening()
         self.v.superview.close()
 
     def on_button_next(self, sender):
@@ -308,7 +320,7 @@ class sta_photo_distributor_v2():
         if option == 2:
             self.change_del_mode()
         if option == 3:
-            self.delete_current()
+            self.delete_dellist()
     
     def on_button_select_album(self, sender):
         if self.delete_mode:
@@ -321,7 +333,7 @@ class sta_photo_distributor_v2():
         self.index = goto - 1
         
     def on_button_trash(self, sender):
-        self.delete_current()
+        self.add_current_to_dellist()
         
 
 class thumbnails_view():
